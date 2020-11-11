@@ -58,7 +58,10 @@ create temporary table temp_demographics as
 select p.person_id,
 	   co1.concept_name as gender,
        co2.concept_name as race,
-       co3.concept_name as ethnicity
+       co3.concept_name as ethnicity,
+       p.year_of_birth,
+       p.month_of_birth,
+       p.day_of_birth
        from person as p
 left join concept as co1 
 on p.gender_concept_id = co1.concept_id
@@ -98,16 +101,33 @@ select person_id,
 select * from temp_cohort;
 select * from temp_diabetes_onset_time;
 select * from temp_demographics;
+
+/*capture the first visit date of each patients in the cohort*/
+create temporary table temp_first_visit as 
+select tc.person_id,
+	   min(vo.visit_start_date) as first_visit_date from temp_cohort as tc
+inner join visit_occurrence as vo
+on tc.person_id = vo.person_id
+group by person_id;
+
+select * from temp_first_visit;
+
 /* Merge this with cohort */
 select tc.person_id,
        tc.diabetes,
        td.onset_time,
        tdemo.gender,
        tdemo.race, 
-       tdemo.ethnicity
+       tdemo.ethnicity,
+       tdemo.year_of_birth,
+       tdemo.month_of_birth,
+       tdemo.day_of_birth,
+       tfv.first_visit_date
        from temp_cohort as tc
 left join temp_diabetes_onset_time as td
 on tc.person_id = td.person_id
 inner join temp_demographics as tdemo
 on tc.person_id = tdemo.person_id
+inner join temp_first_visit as tfv 
+on tfv.person_id = tc.person_id
 order by tc.person_id;
