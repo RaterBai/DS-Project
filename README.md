@@ -20,3 +20,16 @@ diabetes.R --- Logistic Regression using R
 final_project_RF_SH.ipynb --- RandomForest classifier
 
 final_project_zehao.ipynb --- GBT Classifier
+
+## Datasets:
+demo_updated.csv --- Updated demographics Information
+
+dignoses.csv --- Diagnosis information
+
+drug_category.csv --- Drug cateogries for each patient
+
+train.csv --- Training set
+
+test.csv --- Test set
+
+train_after_selection.csv --- Training data after 3-fold Lasso feature selection
